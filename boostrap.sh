@@ -30,16 +30,26 @@ function wget_untar { wget --progress=bar:force --no-check-certificate $1 -O- | 
 function conf { ../configure --prefix=$INSTALL_PREFIX "$@"; }
 function mmi { $MAKE "$@" && $MAKE install; }
 function mmk { $MAKE "$@"; }
-function sysinfo {    
+function sysinfo {
+    ## ONLY TEST FOR
+    ## 1.) Ubuntu20
+    ## 2.) Centos8
+    ## 3.) Centos7
+    ## 4.) Debian10 (Default)
     TEST=$(uname -a | grep -q "Ubuntu"; echo $?)
     if [[ "$TEST" -eq "0" ]]; then
 	SYSVER=$(uname -v | awk -F " " '{print $1}' | awk -F "~|-" '{print $3$2}' ); SYSVER=${SYSVER%.*.*}
     else
-	OSTEST=$(uname -r | grep -q "el8"; echo $?)	
+	OSTEST=$(uname -r | grep -q "el"; echo $?)
 	if [[ "$OSTEST" -eq 0 ]]; then
-	    SYSVER="centos8"
+	    ELTEST=$(uname -r | grep -q "el8"; echo $?)
+	    if [[ "$ELTEST" -eq 0 ]]; then
+		SYSVER="centos8"
+	    else
+		SYSVER="centos7"
+	    fi
 	else
-	    SYSVER="centos7"
+	    SYSVER="debian10"
 	fi
     fi
     SYSVER=${SYSVER,,}
