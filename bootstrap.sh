@@ -11,8 +11,8 @@ test -z "$INSTALL_PREFIX" && INSTALL_PREFIX="$PWD/local"
 test -z "$MAKE" && MAKE="make -j`nproc`"
 
 # installation switches
-test -z "$INSTALL_OPENMPI" && INSTALL_OPENMPI="1"
-test -z "$INSTALL_VISIT" && INSTALL_VISIT="1"
+test -z "$INSTALL_OPENMPI" && INSTALL_OPENMPI="0"
+test -z "$INSTALL_VISIT" && INSTALL_VISIT="0"
 test -z "$INSTALL_EPOCH" && INSTALL_EPOCH="1"
 
 # packages version
@@ -128,6 +128,16 @@ if [[ "$INSTALL_EPOCH" -eq "1" ]]; then
     
     # append to bashrc
     addbashrc "export COMPILER=gfortran"
+
+    # run test
+    for ipkg in matplotlib nose; do
+	PKG_TEST=$(python -c 'import pkgutil; print(0 if pkgutil.find_loader("${ipkg}") else 1)')
+	if [[ "${PKG_TEST}" -eq "1" ]]; then
+	    pip install ${ipkg} --user
+	fi
+    done
+    cd scripts
+    export COMPILER=gfortran; ./run-tests-epoch-all.sh
     
     echo "Done."; sleep 3
 fi
