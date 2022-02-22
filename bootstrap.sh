@@ -72,7 +72,7 @@ function addbashrc {
     }
 
 ################################
-echo "Boostraping..."
+echo "Bootstrapping..."
 echo "Package installation summary"
 echo "OpenMPI : $INSTALL_OPENMPI ; v${OPENMPI_VERSION}"
 echo "Visit   : $INSTALL_VISIT ; v${VISIT_VERSION}"
@@ -92,7 +92,7 @@ if [[ "$INSTALL_OPENMPI" -eq "1" ]]; then
     mmi
 
     # append to bash
-    addbashrc "export PATH=$INSTALL_PREFIX/bin:$PATH"
+    addbashrc "export PATH=$INSTALL_PREFIX/bin:\$PATH"
     
     echo "Done."; sleep 3
 fi
@@ -108,7 +108,7 @@ if [[ "INSTALL_VISIT" -eq "1" ]]; then
     test -d visit$VISIT_VER.linux-x86_64 || wget_untar https://github.com/visit-dav/visit/releases/download/v$VISIT_VERSION/visit$VISIT_VER.linux-x86_64-${SYSVER}.tar.gz
 
     # append to bash
-    addbashrc "export PATH=$BUILD_PREFIX/visit$VISIT_VER.linux-x86_64/bin:$PATH"
+    addbashrc "export PATH=$BUILD_PREFIX/visit$VISIT_VER.linux-x86_64/bin:\$PATH"
     
     echo "Done."; sleep 3
 fi
@@ -127,7 +127,7 @@ if [[ "$INSTALL_EPOCH" -eq "1" ]]; then
     done
     
     # append to bashrc
-    addbashrc "COMPILER=gfortran"
+    addbashrc "export COMPILER=gfortran"
     
     echo "Done."; sleep 3
 fi
