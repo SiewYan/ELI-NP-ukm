@@ -1,0 +1,161 @@
+begin:constant
+   # laser parameters    
+      lambda0   = 0.8 * micron 	        # laser wavelength
+      Intensity = 1.0e22          	        # laser intensity in W/cm2
+      t_laser   = 22.0e-15		        # pulse duration
+
+   # derived laser parameters
+      omega    = (2.0*pi*c)/lambda0
+      sigma_t  = t_laser/(2*sqrt(loge(2)))
+      n_crit   = critical(omega)
+
+   # plasma parameters    
+      den_tube = 15*n_crit 
+
+   # grid parameters
+      box_length = 8 *micron	
+
+   #  nanotube parameter
+      L_tube = 5*micron
+      x0 = 1.0*micron
+      x1 = x0 + L_tube
+       d =  0.15*micron
+      dm =  1.0*micron
+      y0 =  0*micron
+      r = sqrt(y^2)
+end:constant
+
+begin:control
+      simplify_deck    = T
+      print_constants  = T
+      field_order      = 2 			# 2,4,6 for FD scheme of Maxwell Solver
+      smooth_currents  = T			
+      field_ionisation = T
+  # size of domain
+      x_min =    0 * micron
+      x_max =   box_length
+      y_min =  -1 * micron
+      y_max =   1 * micron
+      
+  #global number of grid points
+      nx     = 4096
+      ny     =  256
+      t_end  = 20.0e-15
+      nsteps = -1
+      dt_multiplier = 0.5
+      dlb_threshold = 0.997
+      stdout_frequency = 1000
+      nprocx = 16
+      nprocy = 2
+      restart_snapshot = 0020.sdf
+end:control
+
+begin:boundaries
+      bc_x_min = simple_laser
+      bc_x_max = open
+      bc_y_min = periodic
+      bc_y_max = periodic
+end:boundaries
+
+begin:laser
+      boundary = x_min
+      intensity_w_cm2 = Intensity
+      lambda = lambda0
+      omega  = omega
+      phase  = 0.0
+      pol_angle = 0                                  	#pi/2.0
+      t_profile = gauss(time, 2*sigma_t, sigma_t)
+end:laser
+
+begin:collisions
+      use_collisions = F
+      coulomb_log = auto
+      collide = all
+      collisional_ionisation = F
+end:collisions
+
+begin:species
+      name=Carbon
+      charge=0.0
+      mass=1836.15*12
+      npart_per_cell = 10
+      ionisation_energies = (11.26*ev, 24.38*ev, 47.89*ev, 64.49*ev, 392.09*ev, 489.99*ev )
+      ionisation_electron_species=electron
+      density = if((r lt d) and (r gt y0 ) and (x gt x0) and (x lt x1),den_tube,0.0)
+      immobile = F
+      dump = F
+end:species
+
+begin:species
+      name = electron
+      charge = -1.0
+      mass = 1.0
+      density = 0.0
+end:species
+
+begin:output
+      dt_snapshot=1e-15
+      restart_dump_every=5
+      force_final_to_be_restartable=T
+      dt_average = 1e-15
+  # Properties at particle positions
+      number_density = always + species + no_sum + single
+      temperature = always + species + no_sum + single
+      ekbar = always + species + no_sum + single
+      ey = always + average_single + snapshot
+      ex = always + average_single + snapshot
+      ez = always + single
+      bx = never + single
+      by = always + average_single + snapshot
+      bz = always + average_single + snapshot
+      jx = always + average_single + snapshot
+      jy = always + average_single + snapshot
+      jz = never + single
+      total_energy_sum = always + single + species
+      absorption = always + single
+      distribution_functions = always + single
+end:output
+
+begin:dist_fn
+      name = en
+      ndims = 1
+
+      direction1 = dir_en
+
+      range1 = (0*mev,40*mev)
+
+      resolution1 = 100
+      restrict_y = (-0.1*micron,0.1*micron)
+      include_species:electron
+      include_species:Carbon
+end:dist_fn
+
+begin:dist_fn
+      name = px_x
+      ndims = 2
+
+      direction1 = dir_x 
+      direction2 = dir_px
+      # Range is ignored for spatial coordinates range1 = (1, 1)
+      range2 = (-2.0e-21, 10.0e-21)
+      # Resolution is ignored for spatial coordinates
+      resolution1 = 1
+      resolution2 = 2048
+      restrict_y = (-0.1*micron,0.1*micron)
+      include_species:electron
+end:dist_fn
+
+begin:dist_fn
+      name = py_x
+      ndims = 2
+
+      direction1 = dir_x
+      direction2 = dir_py
+      # Range is ignored for spatial coordinates range1 = (1, 1)
+      range2 = (-10.0e-21, 10.0e-21)
+      # Resolution is ignored for spatial coordinates
+      resolution1 = 1
+      resolution2 = 2048
+      restrict_y = (-0.1*micron,0.1*micron)
+      include_species:electron
+end:dist_fn
