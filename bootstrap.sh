@@ -118,8 +118,8 @@ fi
 if [[ "$INSTALL_EPOCH" -eq "1" ]]; then
     echo "Installing EPOCH : v${EPOCH_VERSION}"; sleep 3
     cd $BUILD_PREFIX
-    test -d epoch-$EPOCH_VERSION || wget_untar https://github.com/Warwick-Plasma/epoch/releases/download/v$EPOCH_VERSION/epoch-$EPOCH_VERSION.tar.gz
-    cd epoch-$EPOCH_VERSION
+    test -d epoch || wget_untar https://github.com/Warwick-Plasma/epoch/releases/download/v$EPOCH_VERSION/epoch-$EPOCH_VERSION.tar.gz
+    cd epoch
     for i in 1 2 3; do
 	cd epoch${i}d
 	mmk COMPILER=gfortran

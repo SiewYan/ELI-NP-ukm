@@ -17,6 +17,8 @@
 #SBATCH --mem=100G                              # memory per NODE
 #SBATCH --partition=cpu-opteron                 # Partition
 
+TOP=$(echo $PWD | awk -F "ELI-NP-ukm" '{print $1}')"ELI-NP-ukm"
+
 export I_MPI_FABRICS=shm:dapl
 if [ x$SLURM_CPUS_PER_TASK == x ]; then
   export OMP_NUM_THREADS=1
@@ -27,7 +29,7 @@ fi
 ## LOAD MODULES ##
 module purge            # clean up loaded modules
 # load necessary modules
-module load openmpi/openmpi-4.1.1
+module load openmpi/openmpi-4.1.1-gcc-10.3.0 python/python-3.9.6
 
 ## RUN YOUR PROGRAM ##
-echo /lustre/user/jfuhong/epoch2D_Data_test | srun $HOME/epoch/epoch2d/bin/epoch2d
+echo $1 | srun $TOP/epoch/epoch2d/bin/epoch2d
