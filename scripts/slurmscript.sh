@@ -32,4 +32,4 @@ module purge            # clean up loaded modules
 module load openmpi/openmpi-4.1.1-gcc-10.3.0 python/python-3.9.6
 
 ## RUN YOUR PROGRAM ##
-echo $1 | srun $TOP/epoch/epoch2d/bin/epoch2d
+echo $TOP/test/input2d.deck | srun $TOP/epoch/epoch2d/bin/epoch2d
