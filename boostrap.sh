@@ -77,13 +77,13 @@ echo "Package installation summary"
 echo "OpenMPI : $INSTALL_OPENMPI ; v${OPENMPI_VERSION}"
 echo "Visit   : $INSTALL_VISIT ; v${VISIT_VERSION}"
 echo "Epoch   : $INSTALL_EPOCH ; v${EPOCH_VERSION}"
-
-## Make installation directory, with an etc subdir so EPOCH etc. will install bash completion scripts
-mkdir -p $INSTALL_PREFIX/etc/bash_completion.d
-
+echo "####################################################"
+echo ""
 ## Install OpenMPI
 if [[ "$INSTALL_OPENMPI" -eq "1" ]]; then
     echo "Installing OpenMPI : v${OPENMPI_VERSION}"; sleep 3
+    ## Make installation directory, with an etc subdir so EPOCH etc. will install bash completion scripts
+    #mkdir -p $INSTALL_PREFIX/etc/bash_completion.d
     cd $BUILD_PREFIX
     test -d openmpi-$OPENMPI_VERSION || wget_untar https://download.open-mpi.org/release/open-mpi/v${OPENMPI_VERSION%??}/openmpi-$OPENMPI_VERSION.tar.gz
     cd openmpi-$OPENMPI_VERSION
