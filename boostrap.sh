@@ -1,5 +1,9 @@
 #! /usr/bin/env bash
 
+# where are we:
+NODE_NAME=$(uname -n | grep -q "dicc.um.edu.my"; echo $?)
+NODE=$(uname -n | awk -F "." '{print $1}')
+
 ## OpenMPI, EPOCH, VISIT installation
 # installation path
 test -z "$BUILD_PREFIX" && BUILD_PREFIX="$PWD"
@@ -18,6 +22,12 @@ test -z "$EPOCH_VERSION" && EPOCH_VERSION="4.17.16"
 
 ## Disable asserts for production running
 #export CPPFLAGS="$CPPFLAGS -DNDEBUG"
+
+## turn-off OpenMPI and Visit in DICC
+if [[ "$NODE_NAME" -eq "0" ]]; then
+    INSTALL_VISIT="0"
+    INSTALL_OPENMPI="0"
+fi
 
 ###############
 
