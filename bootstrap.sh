@@ -12,7 +12,7 @@ test -z "$MAKE" && MAKE="make -j`nproc`"
 
 # installation switches
 test -z "$INSTALL_OPENMPI" && INSTALL_OPENMPI="1"
-test -z "$INSTALL_VISIT" && INSTALL_VISIT="1"
+test -z "$INSTALL_VISIT" && INSTALL_VISIT="0"
 test -z "$INSTALL_EPOCH" && INSTALL_EPOCH="1"
 
 # packages version
@@ -119,7 +119,7 @@ if [[ "$INSTALL_EPOCH" -eq "1" ]]; then
     echo "Installing EPOCH : v${EPOCH_VERSION}"; sleep 3
     cd $BUILD_PREFIX
     test -d epoch || wget_untar https://github.com/Warwick-Plasma/epoch/releases/download/v$EPOCH_VERSION/epoch-$EPOCH_VERSION.tar.gz
-    cd epoch
+    cd epoch-$EPOCH_VERSION
     for i in 1 2 3; do
 	cd epoch${i}d
 	mmk COMPILER=gfortran
