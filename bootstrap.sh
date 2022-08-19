@@ -11,8 +11,8 @@ test -z "$INSTALL_PREFIX" && INSTALL_PREFIX="$PWD/local"
 test -z "$MAKE" && MAKE="make -j`nproc`"
 
 # installation switches
-test -z "$INSTALL_OPENMPI" && INSTALL_OPENMPI="0"
-test -z "$INSTALL_VISIT" && INSTALL_VISIT="0"
+test -z "$INSTALL_OPENMPI" && INSTALL_OPENMPI="1"
+test -z "$INSTALL_VISIT" && INSTALL_VISIT="1"
 test -z "$INSTALL_EPOCH" && INSTALL_EPOCH="1"
 
 # packages version
