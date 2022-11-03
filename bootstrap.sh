@@ -12,13 +12,13 @@ test -z "$MAKE" && MAKE="make -j`nproc`"
 
 # installation switches
 test -z "$INSTALL_OPENMPI" && INSTALL_OPENMPI="1"
-test -z "$INSTALL_VISIT" && INSTALL_VISIT="0"
+test -z "$INSTALL_VISIT" && INSTALL_VISIT="0" # require gcc 9.0 X to work, skip
 test -z "$INSTALL_EPOCH" && INSTALL_EPOCH="1"
 
 # packages version
-test -z "$OPENMPI_VERSION" && OPENMPI_VERSION="3.1.4"
-test -z "$VISIT_VERSION" && VISIT_VERSION="3.2.2"
-test -z "$EPOCH_VERSION" && EPOCH_VERSION="4.17.16"
+test -z "$OPENMPI_VERSION" && OPENMPI_VERSION="4.1.4"
+test -z "$VISIT_VERSION" && VISIT_VERSION="3.3.1"
+test -z "$EPOCH_VERSION" && EPOCH_VERSION="4.18.0"
 
 ## Disable asserts for production running
 #export CPPFLAGS="$CPPFLAGS -DNDEBUG"
@@ -105,7 +105,8 @@ if [[ "INSTALL_VISIT" -eq "1" ]]; then
     sysinfo
 
     # hardcoded to linux x86_64 system
-    test -d visit$VISIT_VER.linux-x86_64 || wget_untar https://github.com/visit-dav/visit/releases/download/v$VISIT_VERSION/visit$VISIT_VER.linux-x86_64-${SYSVER}.tar.gz
+    echo "https://github.com/visit-dav/visit/releases/download/v$VISIT_VERSION/visit$VISIT_VER.linux-x86_64-${SYSVER}20.tar.gz"
+    test -d visit$VISIT_VER.linux-x86_64 || wget_untar https://github.com/visit-dav/visit/releases/download/v$VISIT_VERSION/visit$VISIT_VER.linux-x86_64-${SYSVER}20.tar.gz
 
     # append to bash
     addbashrc "export PATH=$BUILD_PREFIX/visit$VISIT_VER.linux-x86_64/bin:\$PATH"
